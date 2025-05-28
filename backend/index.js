@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import connectDB from "./config/mongoDB.config.js";
 import expensesRoute from "./routes/expenses.routes.js";
 import userRouter from "./routes/authentication.routes.js";
+import fs from 'fs';
 import path from "path";
 
 config();
@@ -28,12 +29,17 @@ const __dirname = path.resolve();
 app.use("/api/expenses", expensesRoute);
 app.use("/api/users", userRouter);
 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "/frontend/dist")));
-  
+
+const frontendBuildPath = path.join(__dirname, "../frontend/dist");
+
+if (fs.existsSync(frontendBuildPath)) {
+  app.use(express.static(frontendBuildPath));
+
   app.get("/*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "/frontend", "dist", "index.html"));
+    res.sendFile(path.join(frontendBuildPath, "index.html"));
   });
+} else {
+  console.warn("⚠️ Frontend build not found. Skipping static file serving.");
 }
 
 app.listen(PORT, () => {
