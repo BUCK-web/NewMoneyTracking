@@ -7,6 +7,7 @@ import expensesRoute from "./routes/expenses.routes.js";
 import userRouter from "./routes/authentication.routes.js";
 import path from "path";
 
+const __dirname = path.resolve();
 config();
 connectDB();
 
@@ -23,7 +24,6 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // FIXED: Added { extended: true } for express.urlencoded
 
-const __dirname = path.resolve();
 // Routes
 app.use("/api/expenses", expensesRoute);
 app.use("/api/users", userRouter);
